@@ -29,22 +29,73 @@ contract ImmutableCreate2Factory {
         bytes32 salt,
         bytes memory initializationCode
     ) internal returns (address deploymentAddress) {
+        // move the initialization code from calldata to memory.
+        //todo is this necessary?
+        bytes memory initCode = initializationCode;
+
+        // determine the target address for contract deployment.
+        address targetDeploymentAddress = address(
+            uint160( // downcast to match the address type.
+                uint256( // convert to uint to truncate upper digits.
+                    keccak256( // compute the CREATE2 hash using 4 inputs.
+                        abi.encodePacked( // pack all inputs to the hash together.
+                            hex"ff", // start with 0xff to distinguish from RLP.
+                            address(this), // this contract will be the caller.
+                            salt, // pass in the supplied salt value.
+                            keccak256(abi.encodePacked(initCode)) // pass in the hash of initialization code.
+                        )
+                    )
+                )
+            )
+        );
+
         // ensure that a contract hasn't been previously deployed to target address.
         require(!_deployed[targetDeploymentAddress], "Invalid contract creation - contract has already been deployed.");
 
         // using inline assembly: load data and length of data, then call CREATE2.
         assembly {
+            // solhint-disable-line
+            let encoded_data := add(0x20, initCode) // load initialization code.
+            let encoded_size := mload(initCode) // load the init code's length.
             deploymentAddress := create2(
-                callvalue, // wei sent with current call
-                // Actual code starts after skipping the first 32 bytes
-                add(initializationCode, 0x20),
-                mload(initializationCode), // Load the size of code contained in the first 32 bytes
-                salt // Salt from function arguments
+                // call CREATE2 with 4 arguments.
+                callvalue, // forward any attached value.
+                encoded_data, // pass in initialization code.
+                encoded_size, // pass in init code's length.
+                salt // pass in the salt value.
             )
         }
-        require(deploymentAddress != address(0), "Failed on deploy");
+        // assembly {
+        //     addr := create2(
+        //         callvalue(), // wei sent with current call
+        //         // Actual code starts after skipping the first 32 bytes
+        //         add(bytecode, 0x20),
+        //         mload(bytecode), // Load the size of code contained in the first 32 bytes
+        //         _salt // Salt from function arguments
+        //     )
+
+        //     if iszero(extcodesize(addr)) {
+        //         revert(0, 0)
+        //     }
+        // }
+
+        // check address against target to ensure that deployment was successful.
+        //todo is this necessary?
+        require(
+            deploymentAddress == targetDeploymentAddress,
+            "Failed to deploy contract using provided salt and initialization code."
+        );
+
         // record the deployment of the contract to prevent redeploys.
         _deployed[deploymentAddress] = true;
+
+        // require(address(this).balance >= amount, "Create2: insufficient balance");
+        // require(bytecode.length != 0, "Create2: bytecode length is zero");
+        // /// @solidity memory-safe-assembly
+        // assembly {
+        //     addr := create2(amount, add(bytecode, 0x20), mload(bytecode), salt)
+        // }
+        // require(addr != address(0), "Create2: Failed on deploy");
     }
 
     /**

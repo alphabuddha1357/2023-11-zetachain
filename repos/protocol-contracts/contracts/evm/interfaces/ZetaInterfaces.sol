@@ -15,6 +15,7 @@ interface ZetaInterfaces {
         /// @dev An encoded, arbitrary message to be parsed by the destination contract
         bytes message;
         /// @dev ZETA to be sent cross-chain + ZetaChain gas fees + destination chain gas fees (expressed in ZETA)
+        //todo didnt differiate zeta and other erc20 token?
         uint256 zetaValueAndGas;
         /// @dev Optional parameters for the ZetaChain protocol
         bytes zetaParams;
@@ -28,6 +29,7 @@ interface ZetaInterfaces {
         uint256 sourceChainId;
         address destinationAddress;
         /// @dev Remaining ZETA from zetaValueAndGas after subtracting ZetaChain gas fees and destination gas fees
+        //todo how to know zetachain fee and destination gas fee?
         uint256 zetaValue;
         bytes message;
     }
@@ -41,6 +43,8 @@ interface ZetaInterfaces {
         bytes destinationAddress;
         uint256 destinationChainId;
         /// @dev Equals to: zetaValueAndGas - ZetaChain gas fees - destination chain gas fees - source chain revert tx gas fees
+
+        //todo how to know zetachain fee and destination gas fee?source chain revert?
         uint256 remainingZetaValue;
         bytes message;
     }
@@ -50,6 +54,7 @@ interface ZetaConnector {
     /**
      * @dev Sending value and data cross-chain is as easy as calling connector.send(SendInput)
      */
+    //todo user call this in source chain?
     function send(ZetaInterfaces.SendInput calldata input) external;
 }
 
@@ -57,6 +62,7 @@ interface ZetaReceiver {
     /**
      * @dev onZetaMessage is called when a cross-chain message reaches a contract
      */
+    //todo system call this in source chain?
     function onZetaMessage(ZetaInterfaces.ZetaMessage calldata zetaMessage) external;
 
     /**
@@ -68,8 +74,11 @@ interface ZetaReceiver {
 
 /**
  * @dev ZetaTokenConsumer makes it easier to handle the following situations:
+ //todo getting means swap
+ //user call those two deposit?
  *   - Getting Zeta using native coin (to pay for destination gas while using `connector.send`)
  *   - Getting Zeta using a token (to pay for destination gas while using `connector.send`)
+ //todo those two call when user withdraw token?
  *   - Getting native coin using Zeta (to return unused destination gas when `onZetaRevert` is executed)
  *   - Getting a token using Zeta (to return unused destination gas when `onZetaRevert` is executed)
  * @dev The interface can be implemented using different strategies, like UniswapV2, UniswapV3, etc

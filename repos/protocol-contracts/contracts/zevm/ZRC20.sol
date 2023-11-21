@@ -160,6 +160,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
         uint256 currentAllowance = _allowances[sender][_msgSender()];
         if (currentAllowance < amount) revert LowAllowance();
 
+        //todo use _allowances directly save more gas
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
@@ -183,6 +184,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
         if (senderBalance < amount) revert LowBalance();
 
         _balances[sender] = senderBalance - amount;
+        //todo this cost more gas
         _balances[recipient] += amount;
 
         emit Transfer(sender, recipient, amount);
@@ -190,7 +192,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
 
     function _mint(address account, uint256 amount) internal virtual {
         if (account == address(0)) revert ZeroAddress();
-
+        //todo this cost more gas
         _totalSupply += amount;
         _balances[account] += amount;
         emit Transfer(address(0), account, amount);
@@ -222,9 +224,11 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @param amount, amount to deposit.
      * @return true/false if succeeded/failed.
      */
+    //todo add more check for whatkind of token in
     function deposit(address to, uint256 amount) external override returns (bool) {
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS && msg.sender != SYSTEM_CONTRACT_ADDRESS) revert InvalidSender();
         _mint(to, amount);
+        //todo is this FUNGIBLE_MODULE_ADDRESS to event necessary?
         emit Deposit(abi.encodePacked(FUNGIBLE_MODULE_ADDRESS), to, amount);
         return true;
     }
@@ -233,6 +237,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @dev Withdraws gas fees.
      * @return returns the ZRC20 address for gas on the same chain of this ZRC20, and calculates the gas fee for withdraw()
      */
+    //todo change name for getxxx
     function withdrawGasFee() public view override returns (address, uint256) {
         address gasZRC20 = ISystem(SYSTEM_CONTRACT_ADDRESS).gasCoinZRC20ByChainId(CHAIN_ID);
         if (gasZRC20 == address(0)) {
@@ -276,6 +281,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @dev Updates gas limit. Can only be updated by the fungible module.
      * @param gasLimit, new gas limit.
      */
+    //todo more check?this value may be more flexible
     function updateGasLimit(uint256 gasLimit) external onlyFungible {
         GAS_LIMIT = gasLimit;
         emit UpdatedGasLimit(gasLimit);

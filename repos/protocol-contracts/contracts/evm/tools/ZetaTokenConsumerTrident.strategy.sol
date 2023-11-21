@@ -36,7 +36,7 @@ contract ZetaTokenConsumerTrident is ZetaTokenConsumer, ZetaTokenConsumerTrident
 
     address internal immutable WETH9Address;
     address public immutable zetaToken;
-
+    //sushiswap
     IPoolRouter public immutable tridentRouter;
     ConcentratedLiquidityPoolFactory public immutable poolFactory;
 
@@ -163,6 +163,7 @@ contract ZetaTokenConsumerTrident is ZetaTokenConsumer, ZetaTokenConsumerTrident
         return amountOut;
     }
 
+    //todo change getTokenFromZeta to swapTokenFromZeta
     function getTokenFromZeta(
         address destinationAddress,
         uint256 minAmountOut,

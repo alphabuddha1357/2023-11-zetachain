@@ -26,7 +26,7 @@ MAINNET_BUILD_FLAGS := -ldflags '$(ldflags)' -tags pebbledb,ledger
 TEST_DIR?="./..."
 TEST_BUILD_FLAGS := -tags TESTNET,pebbledb,ledger
 PRIV_BUILD_FLAGS := -tags PRIVNET,pebbledb,ledger
-HSM_BUILD_FLAGS := -tags TESTNET,pebbled,ledger,hsm_test
+HSM_BUILD_FLAGSf := -tags TESTNET,pebbled,ledger,hsm_test
 
 clean: clean-binaries clean-dir clean-test-dir clean-coverage
 

@@ -149,6 +149,7 @@ contract ZetaTokenConsumerUniV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3Erro
 
         emit ZetaExchangedForEth(zetaTokenAmount, amountOut);
 
+        //todo check reentrance
         (bool sent, ) = destinationAddress.call{value: amountOut}("");
         if (!sent) revert ErrorSendingETH();
 

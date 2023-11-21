@@ -7,6 +7,7 @@ import "../interfaces/ZetaInterfaces.sol";
 import "../interfaces/ZetaInteractorErrors.sol";
 
 abstract contract ZetaInteractor is Ownable2Step, ZetaInteractorErrors {
+    //todo zerobytes hash name
     bytes32 constant ZERO_BYTES = keccak256(new bytes(0));
     uint256 internal immutable currentChainId;
     ZetaConnector public immutable connector;

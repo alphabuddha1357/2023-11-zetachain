@@ -174,7 +174,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         WETH9(WETH9Address).withdraw(amountOut);
 
         emit ZetaExchangedForEth(zetaTokenAmount, amountOut);
-
+        //todo get function with state change? reentrance?
         (bool sent, ) = destinationAddress.call{value: amountOut}("");
         if (!sent) revert ErrorSendingETH();
 
