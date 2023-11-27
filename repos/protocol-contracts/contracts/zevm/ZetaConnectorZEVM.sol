@@ -91,8 +91,11 @@ contract ZetaConnectorZEVM is ZetaInterfaces {
      */
     function send(ZetaInterfaces.SendInput calldata input) external {
         // Transfer wzeta to "fungible" module, which will be burnt by the protocol post processing via hooks.
+        //todo wzeta transfer here,anyone can call this function
         if (!WZETA(wzeta).transferFrom(msg.sender, address(this), input.zetaValueAndGas)) revert WZETATransferFailed();
         WZETA(wzeta).withdraw(input.zetaValueAndGas);
+        //todo convert to zeta,transfer to FUNGIBLE_MODULE_ADDRESS,burn?
+        //and then module call systemcontract?
         (bool sent, ) = FUNGIBLE_MODULE_ADDRESS.call{value: input.zetaValueAndGas}("");
         if (!sent) revert FailedZetaSent();
         emit ZetaSent(

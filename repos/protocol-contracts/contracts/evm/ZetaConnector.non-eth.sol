@@ -39,6 +39,7 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
      * This call burn the token and emit an event with all the data needed by the protocol
      */
     function send(ZetaInterfaces.SendInput calldata input) external override whenNotPaused {
+        //todo check what is the authority
         ZetaNonEthInterface(zetaToken).burnFrom(msg.sender, input.zetaValueAndGas);
 
         emit ZetaSent(
@@ -68,6 +69,7 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
         bytes32 internalSendHash
     ) external override onlyTssAddress {
         if (zetaValue + ZetaNonEthInterface(zetaToken).totalSupply() > maxSupply) revert ExceedsMaxSupply(maxSupply);
+        //todo check this authority
         ZetaNonEthInterface(zetaToken).mint(destinationAddress, zetaValue, internalSendHash);
 
         if (message.length > 0) {
@@ -82,6 +84,7 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
     /**
      * @dev Handler to receive errors from other chain.
      * This method can be called only by TSS.
+    todo fix this comment
      * Transfer the Zeta tokens to destination and calls onZetaRevert if it's needed.
      * To perform the transfer mint new tokens, validating first the maxSupply allowed in the current chain.
      */
@@ -96,6 +99,8 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
     ) external override whenNotPaused onlyTssAddress {
         if (remainingZetaValue + ZetaNonEthInterface(zetaToken).totalSupply() > maxSupply)
             revert ExceedsMaxSupply(maxSupply);
+        //todo mint to txsender in destination ?
+        //only this connector can mint burn
         ZetaNonEthInterface(zetaToken).mint(zetaTxSenderAddress, remainingZetaValue, internalSendHash);
 
         if (message.length > 0) {

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-contract WETH9 {
+contract WZETA2 {
     string public name = "Wrapped Zeta";
     string public symbol = "WZETA";
     uint8 public decimals = 18;
@@ -43,6 +43,7 @@ contract WETH9 {
         return transferFrom(msg.sender, dst, wad);
     }
 
+    //todo if allowan is max,never sub?
     function transferFrom(address src, address dst, uint wad) public returns (bool) {
         require(balanceOf[src] >= wad);
 

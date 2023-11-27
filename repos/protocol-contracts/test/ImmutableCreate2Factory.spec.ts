@@ -125,4 +125,34 @@ describe("Deterministic deployment tests", () => {
     await contract.acceptOwnership();
     expect(await contract.owner()).to.be.eq(signer.address);
   });
+
+  it("init code 0", async () => {
+    let saltStr = "0";
+
+    const salthex = saltToHex(saltStr, signer.address);
+    const constructorTypes = ["address"];
+    const constructorArgs = [signer.address];
+
+    const computedAddr = await immutableCreate2.findCreate2Address(salthex, [1]);
+    const { address } = await deployContractToAddress({
+      constructorArgs: constructorArgs,
+      constructorTypes: constructorTypes,
+      contractBytecode: ZetaInteractorMock__factory.bytecode,
+      factoryAddress: immutableCreate2.address,
+      salt: salthex,
+      signer: signer,
+      transferOwner: true,
+    });
+    // await deployContractToAddress({
+    //   constructorArgs: constructorArgs,
+    //   constructorTypes: constructorTypes,
+    //   contractBytecode: ZetaInteractorMock__factory.bytecode,
+    //   factoryAddress: immutableCreate2.address,
+    //   salt: salthex,
+    //   signer: signer,
+    //   transferOwner: true,
+    // });
+    // await immutableCreate2.safeCreate2(salthex, []);
+    console.log("computedAddr", computedAddr);
+  });
 });

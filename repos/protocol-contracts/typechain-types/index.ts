@@ -152,8 +152,10 @@ export type { SystemContractErrors } from "./contracts/zevm/SystemContract.sol/S
 export { SystemContractErrors__factory } from "./factories/contracts/zevm/SystemContract.sol/SystemContractErrors__factory";
 export type { SystemContractMock } from "./contracts/zevm/testing/SystemContractMock.sol/SystemContractMock";
 export { SystemContractMock__factory } from "./factories/contracts/zevm/testing/SystemContractMock.sol/SystemContractMock__factory";
-export type { WZETA } from "./contracts/zevm/ZetaConnectorZEVM.sol/WZETA";
-export { WZETA__factory } from "./factories/contracts/zevm/ZetaConnectorZEVM.sol/WZETA__factory";
+export type { WZETA } from "./contracts/zevm/WZETA.sol/WZETA";
+export { WZETA__factory } from "./factories/contracts/zevm/WZETA.sol/WZETA__factory";
+export type { WZETA2 } from "./contracts/zevm/WZETA.sol/WZETA2";
+export { WZETA2__factory } from "./factories/contracts/zevm/WZETA.sol/WZETA2__factory";
 export type { ZetaConnectorZEVM } from "./contracts/zevm/ZetaConnectorZEVM.sol/ZetaConnectorZEVM";
 export { ZetaConnectorZEVM__factory } from "./factories/contracts/zevm/ZetaConnectorZEVM.sol/ZetaConnectorZEVM__factory";
 export type { ZRC20 } from "./contracts/zevm/ZRC20.sol/ZRC20";

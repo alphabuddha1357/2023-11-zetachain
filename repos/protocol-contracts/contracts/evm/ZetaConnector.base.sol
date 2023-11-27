@@ -12,6 +12,7 @@ import "./interfaces/ZetaInterfaces.sol";
  * This contract manages interactions between TSS and different chains.
  * There's an instance of this contract on each chain supported by ZetaChain.
  */
+//todo deploy in every chain?
 contract ZetaConnectorBase is ConnectorErrors, Pausable {
     address public immutable zetaToken;
 
@@ -24,6 +25,7 @@ contract ZetaConnectorBase is ConnectorErrors, Pausable {
     /**
      * @dev Collectively held by ZetaChain validators.
      */
+    //todo in eth zetachain validator hold this contract
     address public tssAddress;
 
     /**
@@ -147,7 +149,7 @@ contract ZetaConnectorBase is ConnectorErrors, Pausable {
     /**
      * @dev Pause the input (send) transactions.
      */
-
+    //todo merge those two may be better?
     function pause() external onlyPauser {
         _pause();
     }
@@ -169,6 +171,7 @@ contract ZetaConnectorBase is ConnectorErrors, Pausable {
      * @dev Handler to receive data from other chain.
      * This method can be called only by TSS. Access validation is in implementation.
      */
+    //todo as destination chain tss call this
     function onReceive(
         bytes calldata zetaTxSenderAddress,
         uint256 sourceChainId,
@@ -182,6 +185,7 @@ contract ZetaConnectorBase is ConnectorErrors, Pausable {
      * @dev Handler to receive errors from other chain.
      * This method can be called only by TSS. Access validation is in implementation.
      */
+    //todo revert error happens where
     function onRevert(
         address zetaTxSenderAddress,
         uint256 sourceChainId,

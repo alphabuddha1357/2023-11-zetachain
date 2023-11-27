@@ -73,6 +73,7 @@ contract ZetaTokenConsumerUniV2 is ZetaTokenConsumer, ZetaTokenConsumerUniV2Erro
             path[0] = wETH;
             path[1] = zetaToken;
         } else {
+            //todo make param path is better?
             path = new address[](3);
             path[0] = inputToken;
             path[1] = wETH;
@@ -164,6 +165,7 @@ contract ZetaTokenConsumerUniV2 is ZetaTokenConsumer, ZetaTokenConsumerUniV2Erro
         path[0] = wETH;
         path[1] = zetaToken;
 
+        //todo 1 may not good
         try uniswapV2Router.getAmountsOut(1, path) returns (uint256[] memory amounts) {
             return amounts[path.length - 1] > 0;
         } catch {

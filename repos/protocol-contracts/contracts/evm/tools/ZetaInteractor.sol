@@ -23,6 +23,7 @@ abstract contract ZetaInteractor is Ownable2Step, ZetaInteractorErrors {
 
     modifier isValidMessageCall(ZetaInterfaces.ZetaMessage calldata zetaMessage) {
         _isValidCaller();
+        //todo txsender have to be source chain interactor
         if (keccak256(zetaMessage.zetaTxSenderAddress) != keccak256(interactorsByChainId[zetaMessage.sourceChainId]))
             revert InvalidZetaMessageCall();
         _;
@@ -30,6 +31,7 @@ abstract contract ZetaInteractor is Ownable2Step, ZetaInteractorErrors {
 
     modifier isValidRevertCall(ZetaInterfaces.ZetaRevert calldata zetaRevert) {
         _isValidCaller();
+        //todo sender have to be this?
         if (zetaRevert.zetaTxSenderAddress != address(this)) revert InvalidZetaRevertCall();
         if (zetaRevert.sourceChainId != currentChainId) revert InvalidZetaRevertCall();
         _;
@@ -42,12 +44,14 @@ abstract contract ZetaInteractor is Ownable2Step, ZetaInteractorErrors {
     }
 
     function _isValidCaller() private view {
+        //todo have to be connector?
         if (msg.sender != address(connector)) revert InvalidCaller(msg.sender);
     }
 
     /**
      * @dev Useful for contracts that inherit from this one
      */
+    //todo why not check address(0)
     function _isValidChainId(uint256 chainId) internal view returns (bool) {
         return (keccak256(interactorsByChainId[chainId]) != ZERO_BYTES);
     }

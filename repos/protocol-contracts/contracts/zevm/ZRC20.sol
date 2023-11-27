@@ -66,6 +66,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
         uint256 gasLimit_,
         address systemContractAddress_
     ) {
+        //todo only fungible module call deploy zrc20
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS) revert CallerIsNotFungibleModule();
         _name = name_;
         _symbol = symbol_;
@@ -160,7 +161,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
         uint256 currentAllowance = _allowances[sender][_msgSender()];
         if (currentAllowance < amount) revert LowAllowance();
 
-        //todo use _allowances directly save more gas
+        //todo use _allowances directly save more gas or use uncheckd
         _approve(sender, _msgSender(), currentAllowance - amount);
 
         return true;
@@ -224,7 +225,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @param amount, amount to deposit.
      * @return true/false if succeeded/failed.
      */
-    //todo add more check for whatkind of token in
+    //todo only fungible address or system call
     function deposit(address to, uint256 amount) external override returns (bool) {
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS && msg.sender != SYSTEM_CONTRACT_ADDRESS) revert InvalidSender();
         _mint(to, amount);
@@ -258,6 +259,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @param amount, amount to deposit.
      * @return true/false if succeeded/failed.
      */
+    //todo any user can call?
     function withdraw(bytes memory to, uint256 amount) external override returns (bool) {
         (address gasZRC20, uint256 gasFee) = withdrawGasFee();
         if (!IZRC20(gasZRC20).transferFrom(msg.sender, FUNGIBLE_MODULE_ADDRESS, gasFee)) {

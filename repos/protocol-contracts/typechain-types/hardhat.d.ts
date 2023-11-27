@@ -341,9 +341,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SystemContractMock__factory>;
     getContractFactory(
-      name: "WETH9",
+      name: "WZETA",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.WETH9__factory>;
+    ): Promise<Contracts.WZETA__factory>;
+    getContractFactory(
+      name: "WZETA2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WZETA2__factory>;
     getContractFactory(
       name: "WZETA",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -772,10 +776,15 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.SystemContractMock>;
     getContractAt(
-      name: "WETH9",
+      name: "WZETA",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.WETH9>;
+    ): Promise<Contracts.WZETA>;
+    getContractAt(
+      name: "WZETA2",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WZETA2>;
     getContractAt(
       name: "WZETA",
       address: string,

@@ -21,12 +21,16 @@ interface SystemContractErrors {
  */
 contract SystemContract is SystemContractErrors {
     /// @notice Map to know the gas price of each chain given a chain id.
+    //todo gasprice=>chainid
     mapping(uint256 => uint256) public gasPriceByChainId;
     /// @notice Map to know the ZRC20 address of a token given a chain id, ex zETH, zBNB etc.
+    //todo chainid=>zrc20
     mapping(uint256 => address) public gasCoinZRC20ByChainId;
     // @dev: Map to know uniswap V2 pool of ZETA/ZRC20 given a chain id. This refer to the build in uniswap deployed at genesis.
+    //chainid=>pool address? uniswap pool in zeta?
     mapping(uint256 => address) public gasZetaPoolByChainId;
 
+    //todo on zeta protocol level?
     /// @notice Fungible address is always the same, it's on protocol level.
     address public constant FUNGIBLE_MODULE_ADDRESS = 0x735b14BB79463307AAcBED86DAf3322B1e6226aB;
     /// @notice Uniswap V2 addresses.
@@ -35,6 +39,7 @@ contract SystemContract is SystemContractErrors {
     /// @notice Address of the wrapped ZETA to interact with Uniswap V2.
     address public wZetaContractAddress;
     /// @notice Address of ZEVM Zeta Connector.
+    //todo also connecotr?
     address public zetaConnectorZEVMAddress;
 
     /// @notice Custom SystemContract errors.
@@ -45,6 +50,7 @@ contract SystemContract is SystemContractErrors {
     event SetWZeta(address);
     event SetConnectorZEVM(address);
 
+    //todo need check this fungible module contract
     /**
      * @dev Only fungible module can deploy a system contract.
      */
@@ -74,7 +80,10 @@ contract SystemContract is SystemContractErrors {
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS) revert CallerIsNotFungibleModule();
         if (target == FUNGIBLE_MODULE_ADDRESS || target == address(this)) revert InvalidTarget();
 
+        //todo module call this function,zrc20 deposit?
+        //todo check deposit?
         IZRC20(zrc20).deposit(target, amount);
+        //todo what target?
         zContract(target).onCrossChainCall(context, zrc20, amount, message);
     }
 
@@ -87,6 +96,7 @@ contract SystemContract is SystemContractErrors {
     function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) {
         if (tokenA == tokenB) revert CantBeIdenticalAddresses();
         (token0, token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
+        //todo check first may save gas?
         if (token0 == address(0)) revert CantBeZeroAddress();
     }
 

@@ -57,12 +57,16 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
     using SafeERC20 for IERC20;
     uint256 internal constant MAX_DEADLINE = 200;
 
-    uint24 public immutable zetaPoolFee;
-    uint24 public immutable tokenPoolFee;
-
+    //todo check those two fees
+    //todo those two still occupy two slots,use uint256 more better
+    //both user pancakeV3Router
+    //todo suggest put fee as parameter insteadof storage
+    uint24 public immutable zetaPoolFee; //zeta pool's univ3 pool fee,only for swap eth to zeta,use pancakeV3Router
+    uint24 public immutable tokenPoolFee; //other pool for swap other token to zeta,use pancakeV3Router
+    //todo check what weth address?
     address public immutable WETH9Address;
     address public immutable zetaToken;
-
+    //todo this name confusing
     ISwapRouterPancake public immutable pancakeV3Router;
     IUniswapV3Factory public immutable uniswapV3Factory;
 
@@ -91,6 +95,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         tokenPoolFee = tokenPoolFee_;
     }
 
+    //todo use 0,1
     modifier nonReentrant() {
         if (_locked) revert ReentrancyError();
         _locked = true;
@@ -100,6 +105,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
 
     receive() external payable {}
 
+    //todo user swap eth to zeta,use zeta pool?
     function getZetaFromEth(
         address destinationAddress,
         uint256 minAmountOut
@@ -110,7 +116,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         ISwapRouterPancake.ExactInputSingleParams memory params = ISwapRouterPancake.ExactInputSingleParams({
             tokenIn: WETH9Address,
             tokenOut: zetaToken,
-            fee: zetaPoolFee,
+            fee: zetaPoolFee, //todo zeta pool in ethereum?
             recipient: destinationAddress,
             amountIn: msg.value,
             amountOutMinimum: minAmountOut,
@@ -123,6 +129,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         return amountOut;
     }
 
+    //todo user swap token to zeta
     function getZetaFromToken(
         address destinationAddress,
         uint256 minAmountOut,
@@ -148,6 +155,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         return amountOut;
     }
 
+    //todo swap zeta to eth,user pancakeV3Router,why not use pancakeV3Router directly?
     function getEthFromZeta(
         address destinationAddress,
         uint256 minAmountOut,
@@ -181,6 +189,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         return amountOut;
     }
 
+    //todo swap zeta to other token,check weird token?
     function getTokenFromZeta(
         address destinationAddress,
         uint256 minAmountOut,

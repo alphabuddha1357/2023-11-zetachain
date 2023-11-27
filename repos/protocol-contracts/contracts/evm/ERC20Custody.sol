@@ -20,11 +20,13 @@ contract ERC20Custody is ReentrancyGuard {
     error ZetaMaxFeeExceeded();
     error ZeroFee();
 
+    //todo looks like this used in zetachain
     /// @notice If custody operations are paused.
     bool public paused;
     /// @notice TSSAddress is the TSS address collectively possessed by Zeta blockchain validators.
     address public TSSAddress;
     /// @notice Threshold Signature Scheme (TSS) [GG20] is a multi-sig ECDSA/EdDSA protocol.
+    //todo those two address is contract?
     address public TSSAddressUpdater;
     /// @notice Current zeta fee for depositing funds into ZetaChain.
     uint256 public zetaFee;
@@ -119,6 +121,7 @@ contract ERC20Custody is ReentrancyGuard {
         if (paused) {
             revert IsPaused();
         }
+        //todo this is not necessary,onlyTSS already check
         if (TSSAddress == address(0)) {
             revert ZeroAddress();
         }
@@ -141,6 +144,8 @@ contract ERC20Custody is ReentrancyGuard {
      * @dev Whitelist asset.
      * @param asset, ERC20 asset.
      */
+    //todo merge those two may be more effective
+    //todo add check 0 address?
     function whitelist(IERC20 asset) external onlyTSS {
         whitelisted[asset] = true;
         emit Whitelisted(asset);
@@ -162,6 +167,7 @@ contract ERC20Custody is ReentrancyGuard {
      * @param amount, asset amount.
      * @param message, bytes message or encoded zetechain call.
      */
+    //todo also need to check this contract deploy in source chain eth or zeta?
     function deposit(
         bytes calldata recipient,
         IERC20 asset,
@@ -178,6 +184,7 @@ contract ERC20Custody is ReentrancyGuard {
             zeta.safeTransferFrom(msg.sender, TSSAddress, zetaFee);
         }
         uint256 oldBalance = asset.balanceOf(address(this));
+        //todo asset transfer to this contract,only for erc20 like,not native token
         asset.safeTransferFrom(msg.sender, address(this), amount);
         // In case if there is a fee on a token transfer, we might not receive a full exepected amount
         // and we need to correctly process that, o we subtract an old balance from a new balance, which should be an actual received amount.
@@ -190,6 +197,7 @@ contract ERC20Custody is ReentrancyGuard {
      * @param asset, ERC20 asset.
      * @param amount, asset amount.
      */
+    //todo this looks like tss help user withdraw token
     function withdraw(address recipient, IERC20 asset, uint256 amount) external nonReentrant onlyTSS {
         if (!whitelisted[asset]) {
             revert NotWhitelisted();
