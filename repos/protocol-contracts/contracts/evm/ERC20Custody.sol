@@ -20,13 +20,14 @@ contract ERC20Custody is ReentrancyGuard {
     error ZetaMaxFeeExceeded();
     error ZeroFee();
 
-    //todo looks like this used in zetachain
+    //todo looks like this used not in zetachain
     /// @notice If custody operations are paused.
     bool public paused;
     /// @notice TSSAddress is the TSS address collectively possessed by Zeta blockchain validators.
+    //todo this is EOA
     address public TSSAddress;
     /// @notice Threshold Signature Scheme (TSS) [GG20] is a multi-sig ECDSA/EdDSA protocol.
-    //todo those two address is contract?
+    //todo this is EOA
     address public TSSAddressUpdater;
     /// @notice Current zeta fee for depositing funds into ZetaChain.
     uint256 public zetaFee;

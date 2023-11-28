@@ -21,6 +21,7 @@ contract ZetaConnectorEth is ZetaConnectorBase {
     ) ZetaConnectorBase(zetaToken_, tssAddress_, tssAddressUpdater_, pauserAddress_) {}
 
     //todo zeta balance,may change function name?
+    //todo this use balance not internal accounting?
     function getLockedAmount() external view returns (uint256) {
         return IERC20(zetaToken).balanceOf(address(this));
     }
@@ -44,6 +45,7 @@ contract ZetaConnectorEth is ZetaConnectorBase {
     //     /// @dev Optional parameters for the ZetaChain protocol
     //     bytes zetaParams;
     // }
+    //todo check how to use in zetachain
     function send(ZetaInterfaces.SendInput calldata input) external override whenNotPaused {
         //todo wait,why only zeta?what about other asset
         bool success = IERC20(zetaToken).transferFrom(msg.sender, address(this), input.zetaValueAndGas);

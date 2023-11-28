@@ -28,6 +28,7 @@ contract ZetaTokenConsumerUniV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3Erro
     using SafeERC20 for IERC20;
     uint256 internal constant MAX_DEADLINE = 200;
 
+    //todo again fee need to be mutable,medium
     uint24 public immutable zetaPoolFee;
     uint24 public immutable tokenPoolFee;
 
@@ -142,7 +143,6 @@ contract ZetaTokenConsumerUniV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3Erro
             amountOutMinimum: minAmountOut,
             sqrtPriceLimitX96: 0
         });
-
         uint256 amountOut = uniswapV3Router.exactInputSingle(params);
 
         WETH9(WETH9Address).withdraw(amountOut);

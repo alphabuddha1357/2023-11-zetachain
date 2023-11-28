@@ -24,10 +24,10 @@ contract SystemContract is SystemContractErrors {
     //todo gasprice=>chainid
     mapping(uint256 => uint256) public gasPriceByChainId;
     /// @notice Map to know the ZRC20 address of a token given a chain id, ex zETH, zBNB etc.
-    //todo chainid=>zrc20
+    //todo chainid=>zrc20 gas coin
     mapping(uint256 => address) public gasCoinZRC20ByChainId;
     // @dev: Map to know uniswap V2 pool of ZETA/ZRC20 given a chain id. This refer to the build in uniswap deployed at genesis.
-    //chainid=>pool address? uniswap pool in zeta?
+    //chainid=>pool address? uniswap pool zeta and gastoken?
     mapping(uint256 => address) public gasZetaPoolByChainId;
 
     //todo on zeta protocol level?
@@ -39,7 +39,7 @@ contract SystemContract is SystemContractErrors {
     /// @notice Address of the wrapped ZETA to interact with Uniswap V2.
     address public wZetaContractAddress;
     /// @notice Address of ZEVM Zeta Connector.
-    //todo also connecotr?
+    //todo also connecotr?for other contract read this?not used in this contract
     address public zetaConnectorZEVMAddress;
 
     /// @notice Custom SystemContract errors.
@@ -54,6 +54,8 @@ contract SystemContract is SystemContractErrors {
     /**
      * @dev Only fungible module can deploy a system contract.
      */
+    //todo only fugible address can deploy
+    //todo add check input param address 0
     constructor(address wzeta_, address uniswapv2Factory_, address uniswapv2Router02_) {
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS) revert CallerIsNotFungibleModule();
         wZetaContractAddress = wzeta_;
@@ -83,7 +85,7 @@ contract SystemContract is SystemContractErrors {
         //todo module call this function,zrc20 deposit?
         //todo check deposit?
         IZRC20(zrc20).deposit(target, amount);
-        //todo what target?
+        //todo what target? reentrance?
         zContract(target).onCrossChainCall(context, zrc20, amount, message);
     }
 
@@ -117,6 +119,7 @@ contract SystemContract is SystemContractErrors {
                             hex"ff",
                             factory,
                             keccak256(abi.encodePacked(token0, token1)),
+                            //todo this systemcontract should be upgradeble,for the future found some bug in solidity,a chain depend on one contract is not a good framework
                             hex"96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f" // init code hash
                         )
                     )
@@ -154,6 +157,7 @@ contract SystemContract is SystemContractErrors {
      */
     function setGasZetaPool(uint256 chainID, address erc20) external {
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS) revert CallerIsNotFungibleModule();
+        //todo make sure erc20 is aeth etc...
         address pool = uniswapv2PairFor(uniswapv2FactoryAddress, wZetaContractAddress, erc20);
         gasZetaPoolByChainId[chainID] = pool;
         emit SetGasZetaPool(chainID, pool);

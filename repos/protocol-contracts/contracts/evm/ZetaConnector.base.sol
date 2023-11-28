@@ -12,14 +12,17 @@ import "./interfaces/ZetaInterfaces.sol";
  * This contract manages interactions between TSS and different chains.
  * There's an instance of this contract on each chain supported by ZetaChain.
  */
-//todo deploy in every chain?
+//todo deploy in every chain include zetachain
+//todo can call zetatoken's mint burn
 contract ZetaConnectorBase is ConnectorErrors, Pausable {
+    //todo call zetatoken's mint burn except zeta in ethereum chain
     address public immutable zetaToken;
 
     /**
      * @dev Multisig contract to pause incoming transactions.
      * The responsibility of pausing outgoing transactions is left to the protocol for more flexibility.
      */
+    //todo only pause incoming?
     address public pauserAddress;
 
     /**

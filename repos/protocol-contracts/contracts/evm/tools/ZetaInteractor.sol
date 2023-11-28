@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "../interfaces/ZetaInterfaces.sol";
 import "../interfaces/ZetaInteractorErrors.sol";
 
+//todo check how to use this contract
 abstract contract ZetaInteractor is Ownable2Step, ZetaInteractorErrors {
     //todo zerobytes hash name
     bytes32 constant ZERO_BYTES = keccak256(new bytes(0));

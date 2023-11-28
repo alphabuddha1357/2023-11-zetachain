@@ -61,6 +61,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
     //todo those two still occupy two slots,use uint256 more better
     //both user pancakeV3Router
     //todo suggest put fee as parameter insteadof storage
+    //todo should be mutable or will redeploy contract if this fee's liquidity drain
     uint24 public immutable zetaPoolFee; //zeta pool's univ3 pool fee,only for swap eth to zeta,use pancakeV3Router
     uint24 public immutable tokenPoolFee; //other pool for swap other token to zeta,use pancakeV3Router
     //todo check what weth address?
@@ -70,6 +71,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
     ISwapRouterPancake public immutable pancakeV3Router;
     IUniswapV3Factory public immutable uniswapV3Factory;
 
+    //todo use uint directly 1,2
     bool internal _locked;
 
     constructor(
@@ -95,7 +97,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
         tokenPoolFee = tokenPoolFee_;
     }
 
-    //todo use 0,1
+    //todo use 1,2
     modifier nonReentrant() {
         if (_locked) revert ReentrancyError();
         _locked = true;
@@ -156,6 +158,7 @@ contract ZetaTokenConsumerPancakeV3 is ZetaTokenConsumer, ZetaTokenConsumerUniV3
     }
 
     //todo swap zeta to eth,user pancakeV3Router,why not use pancakeV3Router directly?
+    //todo have to use nonreentrance
     function getEthFromZeta(
         address destinationAddress,
         uint256 minAmountOut,

@@ -24,6 +24,7 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
         address pauserAddress_
     ) ZetaConnectorBase(zetaTokenAddress_, tssAddress_, tssAddressUpdater_, pauserAddress_) {}
 
+    //todo should not have zeta here?only for ethchain is meaningful
     function getLockedAmount() external view returns (uint256) {
         return ZetaNonEthInterface(zetaToken).balanceOf(address(this));
     }
@@ -38,6 +39,7 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
      * @dev Entry point to send data to protocol
      * This call burn the token and emit an event with all the data needed by the protocol
      */
+    //todo need user approve this connector
     function send(ZetaInterfaces.SendInput calldata input) external override whenNotPaused {
         //todo check what is the authority
         ZetaNonEthInterface(zetaToken).burnFrom(msg.sender, input.zetaValueAndGas);
@@ -70,6 +72,7 @@ contract ZetaConnectorNonEth is ZetaConnectorBase {
     ) external override onlyTssAddress {
         if (zetaValue + ZetaNonEthInterface(zetaToken).totalSupply() > maxSupply) revert ExceedsMaxSupply(maxSupply);
         //todo check this authority
+        //todo only this connector can call mint
         ZetaNonEthInterface(zetaToken).mint(destinationAddress, zetaValue, internalSendHash);
 
         if (message.length > 0) {

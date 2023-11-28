@@ -23,8 +23,14 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
     /// @notice Chain id.abi
     uint256 public immutable CHAIN_ID;
     /// @notice Coin type, checkout Interfaces.sol.
+    //     enum CoinType {
+    //     Zeta,
+    //     Gas,
+    //     ERC20
+    // }
     CoinType public immutable COIN_TYPE;
     /// @notice System contract address.
+    //todo call deposit?
     address public SYSTEM_CONTRACT_ADDRESS;
     /// @notice Gas limit.
     uint256 public GAS_LIMIT;
@@ -74,6 +80,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
         CHAIN_ID = chainid_;
         COIN_TYPE = coinType_;
         GAS_LIMIT = gasLimit_;
+        //todo check address 0?
         SYSTEM_CONTRACT_ADDRESS = systemContractAddress_;
     }
 
@@ -172,6 +179,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @param amount, amount to burn.
      * @return true/false if succeeded/failed.
      */
+    //todo only burn self
     function burn(uint256 amount) external returns (bool) {
         _burn(msg.sender, amount);
         return true;
@@ -236,6 +244,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
 
     /**
      * @dev Withdraws gas fees.
+     //todo can use in other chain except zeta?
      * @return returns the ZRC20 address for gas on the same chain of this ZRC20, and calculates the gas fee for withdraw()
      */
     //todo change name for getxxx
@@ -262,6 +271,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
     //todo any user can call?
     function withdraw(bytes memory to, uint256 amount) external override returns (bool) {
         (address gasZRC20, uint256 gasFee) = withdrawGasFee();
+        //todo user pay gas fee and burn self token,and cctx module will send out outboundtx to destination chain
         if (!IZRC20(gasZRC20).transferFrom(msg.sender, FUNGIBLE_MODULE_ADDRESS, gasFee)) {
             revert GasFeeTransferFailed();
         }
@@ -274,6 +284,7 @@ contract ZRC20 is IZRC20, IZRC20Metadata, ZRC20Errors {
      * @dev Updates system contract address. Can only be updated by the fungible module.
      * @param addr, new system contract address.
      */
+    //only fungile can call this
     function updateSystemContractAddress(address addr) external onlyFungible {
         SYSTEM_CONTRACT_ADDRESS = addr;
         emit UpdatedSystemContract(addr);

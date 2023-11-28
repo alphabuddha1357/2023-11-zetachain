@@ -6,6 +6,7 @@ interface ZetaInterfaces {
      * @dev Use SendInput to interact with the Connector: connector.send(SendInput)
      */
     struct SendInput {
+        //todo no source?
         /// @dev Chain id of the destination chain. More about chain ids https://docs.zetachain.com/learn/glossary#chain-id
         uint256 destinationChainId;
         /// @dev Address receiving the message on the destination chain (expressed in bytes since it can be non-EVM)
@@ -96,6 +97,7 @@ contract ZetaConnectorZEVM is ZetaInterfaces {
         WZETA(wzeta).withdraw(input.zetaValueAndGas);
         //todo convert to zeta,transfer to FUNGIBLE_MODULE_ADDRESS,burn?
         //and then module call systemcontract?
+        //todo user just transfer wzeta here and transfer to fungible
         (bool sent, ) = FUNGIBLE_MODULE_ADDRESS.call{value: input.zetaValueAndGas}("");
         if (!sent) revert FailedZetaSent();
         emit ZetaSent(
@@ -114,6 +116,7 @@ contract ZetaConnectorZEVM is ZetaInterfaces {
      * @dev Sends ZETA and bytes messages (to execute it) crosschain.
      * @param wzeta_, new WZETA address.
      */
+    //todo only fungible can update
     function setWzetaAddress(address wzeta_) external {
         if (msg.sender != FUNGIBLE_MODULE_ADDRESS) revert OnlyFungibleModule();
         wzeta = wzeta_;

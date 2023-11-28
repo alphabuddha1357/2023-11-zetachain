@@ -96,6 +96,8 @@ contract ZetaTokenConsumerTrident is ZetaTokenConsumer, ZetaTokenConsumerTrident
         return amountOut;
     }
 
+    //todo those func both not use nonentrance
+
     function getZetaFromToken(
         address destinationAddress,
         uint256 minAmountOut,
@@ -153,7 +155,7 @@ contract ZetaTokenConsumerTrident is ZetaTokenConsumer, ZetaTokenConsumerTrident
             amountOutMinimum: minAmountOut,
             pool: pairPools[0],
             to: destinationAddress,
-            unwrap: true
+            unwrap: true //todo how about reentrance
         });
 
         uint256 amountOut = tridentRouter.exactInputSingle(params);

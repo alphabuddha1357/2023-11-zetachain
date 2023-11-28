@@ -107,7 +107,7 @@ contract ZetaTokenConsumerUniV2 is ZetaTokenConsumer, ZetaTokenConsumerUniV2Erro
         address[] memory path = new address[](2);
         path[0] = zetaToken;
         path[1] = wETH;
-
+        //todo reentrance
         uint256[] memory amounts = uniswapV2Router.swapExactTokensForETH(
             zetaTokenAmount,
             minAmountOut,
@@ -165,7 +165,7 @@ contract ZetaTokenConsumerUniV2 is ZetaTokenConsumer, ZetaTokenConsumerUniV2Erro
         path[0] = wETH;
         path[1] = zetaToken;
 
-        //todo 1 may not good
+        //todo 1 may not good medium
         try uniswapV2Router.getAmountsOut(1, path) returns (uint256[] memory amounts) {
             return amounts[path.length - 1] > 0;
         } catch {

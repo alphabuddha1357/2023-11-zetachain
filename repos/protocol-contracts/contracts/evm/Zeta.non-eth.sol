@@ -8,6 +8,7 @@ import "./interfaces/ZetaErrors.sol";
 import "./interfaces/ZetaNonEthInterface.sol";
 
 contract ZetaNonEth is ZetaNonEthInterface, ERC20Burnable, ZetaErrors {
+    //todo have connector address,only connector can call mint burn
     address public connectorAddress;
 
     /**
@@ -37,6 +38,7 @@ contract ZetaNonEth is ZetaNonEthInterface, ERC20Burnable, ZetaErrors {
         tssAddressUpdater = tssAddressUpdater_;
     }
 
+    //todo tssAddressUpdater and tssAddress can update this,connector address cannot update
     function updateTssAndConnectorAddresses(address tssAddress_, address connectorAddress_) external {
         if (msg.sender != tssAddressUpdater && msg.sender != tssAddress) revert CallerIsNotTssOrUpdater(msg.sender);
         if (tssAddress_ == address(0) || connectorAddress_ == address(0)) revert InvalidAddress();
@@ -70,6 +72,7 @@ contract ZetaNonEth is ZetaNonEthInterface, ERC20Burnable, ZetaErrors {
         emit Minted(mintee, value, internalSendHash);
     }
 
+    //todo connector can burn anyone's zeta token? need account approve connector contract
     function burnFrom(address account, uint256 amount) public override(ZetaNonEthInterface, ERC20Burnable) {
         /**
          * @dev Only Connector can burn.
