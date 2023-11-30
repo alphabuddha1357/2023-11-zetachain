@@ -37,7 +37,7 @@ enum CoinType {
 enum ChainName {
   option (gogoproto.goproto_enum_stringer) = true;
   empty = 0;
-
+//todo report this? this is not mutable,cannot add more
   eth_mainnet = 1;
   zeta_mainnet = 2;
   btc_mainnet = 3;

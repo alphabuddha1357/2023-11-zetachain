@@ -2,6 +2,7 @@ package sample
 
 import (
 	"context"
+	"log"
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -15,9 +16,10 @@ import (
 
 func Chain(chainID int64) *common.Chain {
 	r := newRandFromSeed(chainID)
-
+	n := r.Intn(4)
+	log.Println("Chain", n)
 	return &common.Chain{
-		ChainName: common.ChainName(r.Intn(4)),
+		ChainName: common.ChainName(n),
 		ChainId:   chainID,
 	}
 }

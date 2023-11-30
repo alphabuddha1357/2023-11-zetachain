@@ -16,6 +16,8 @@ import (
 // Only the admin policy account is authorized to broadcast this message.
 func (k msgServer) UpdateCoreParams(goCtx context.Context, msg *types.MsgUpdateCoreParams) (*types.MsgUpdateCoreParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	//todo group2 can update core params
+	//todo report this,how about those 2 addresses comprised?
 	if msg.Creator != k.GetParams(ctx).GetAdminPolicyAccount(types.Policy_Type_group2) {
 		return &types.MsgUpdateCoreParamsResponse{}, types.ErrNotAuthorizedPolicy
 	}

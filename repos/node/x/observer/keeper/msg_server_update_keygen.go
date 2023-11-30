@@ -13,6 +13,7 @@ import (
 func (k msgServer) UpdateKeygen(goCtx context.Context, msg *types.MsgUpdateKeygen) (*types.MsgUpdateKeygenResponse, error) {
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	//todo only group1 can update keygen?
 	if msg.Creator != k.GetParams(ctx).GetAdminPolicyAccount(types.Policy_Type_group1) {
 		return &types.MsgUpdateKeygenResponse{}, types.ErrNotAuthorizedPolicy
 	}

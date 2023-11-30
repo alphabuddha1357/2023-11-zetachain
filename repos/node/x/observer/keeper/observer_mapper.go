@@ -56,6 +56,7 @@ func (k Keeper) GetAllObserverMappers(ctx sdk.Context) (mappers []*types.Observe
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ObserverMapperKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
+	//todo notice this may not in the set order
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.ObserverMapper
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
@@ -67,6 +68,7 @@ func (k Keeper) GetAllObserverMappersForAddress(ctx sdk.Context, address string)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ObserverMapperKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
+	//todo looks like one address=>many observer in every chain
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.ObserverMapper
 		k.cdc.MustUnmarshal(iterator.Value(), &val)

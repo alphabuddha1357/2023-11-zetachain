@@ -13,6 +13,7 @@ func (k msgServer) UpdateCrosschainFlags(goCtx context.Context, msg *types.MsgUp
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	requiredGroup := types.Policy_Type_group1
+	//todo those 3 only group2 can update?
 	if msg.IsInboundEnabled || msg.IsOutboundEnabled || msg.GasPriceIncreaseFlags != nil {
 		requiredGroup = types.Policy_Type_group2
 	}

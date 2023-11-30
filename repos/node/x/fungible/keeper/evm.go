@@ -69,7 +69,7 @@ func (k Keeper) DeployContract(ctx sdk.Context, metadata *bind.MetaData, ctorArg
 	if err != nil {
 		return common.Address{}, err
 	}
-
+	//tdo looks like module address is eoa?
 	contractAddr := crypto.CreateAddress(types.ModuleAddressEVM, nonce)
 	_, err = k.CallEVMWithData(ctx, types.ModuleAddressEVM, nil, data, true, false, BigIntZero, nil)
 	if err != nil {

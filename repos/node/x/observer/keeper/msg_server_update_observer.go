@@ -36,6 +36,7 @@ func (k msgServer) UpdateObserver(goCtx context.Context, msg *types.MsgUpdateObs
 	k.UpdateObserverAddress(ctx, msg.OldObserverAddress, msg.NewObserverAddress)
 
 	// Update the node account with the new operator address
+	//todo observer address is operator?
 	nodeAccount, found := k.GetNodeAccount(ctx, msg.OldObserverAddress)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrNodeAccountNotFound, fmt.Sprintf("Observer node account not found : %s", msg.OldObserverAddress))
@@ -74,6 +75,7 @@ func (k Keeper) CheckUpdateReason(ctx sdk.Context, msg *types.MsgUpdateObserver)
 		}
 	case types.ObserverUpdateReason_AdminUpdate:
 		{
+			//todo only group2 can update?
 			if msg.Creator != k.GetParams(ctx).GetAdminPolicyAccount(types.Policy_Type_group2) {
 				return false, types.ErrNotAuthorizedPolicy
 			}

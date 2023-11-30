@@ -13,6 +13,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	observerCount := uint64(0)
 	for _, mapper := range genesisObservers {
 		if mapper != nil {
+			//todo look like every chain's observer
 			k.SetObserverMapper(ctx, mapper)
 			observerCount += uint64(len(mapper.ObserverList))
 		}
@@ -26,6 +27,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 
 	// Set all the nodeAccount
+	//todo what is node account,observer's account?
 	for _, elem := range genState.NodeAccountList {
 		if elem != nil {
 			k.SetNodeAccount(ctx, *elem)
@@ -36,6 +38,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if genState.Params != nil {
 		params = *genState.Params
 	}
+	//todo look like all param set to keeper?
 	k.SetParams(ctx, params)
 
 	// Set if defined

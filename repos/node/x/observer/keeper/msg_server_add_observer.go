@@ -25,6 +25,8 @@ func (k msgServer) AddObserver(goCtx context.Context, msg *types.MsgAddObserver)
 		return &types.MsgAddObserverResponse{}, cosmoserrors.Wrap(sdkerrors.ErrInvalidPubKey, err.Error())
 	}
 	k.DisableInboundOnly(ctx)
+	//todo what is the relation between observer and node account,
+	//todo call this func disable inbound,need enable manually?
 	// AddNodeAccountOnly flag usage
 	// True: adds observer into the Node Account list but returns without adding to the observer list
 	// False: adds observer to the observer list, and not the node account list

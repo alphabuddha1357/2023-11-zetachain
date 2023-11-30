@@ -69,9 +69,10 @@ func (k Keeper) FindBallot(ctx sdk.Context, index string, chain *common.Chain, o
 			return
 		}
 		ballot = types.Ballot{
-			Index:                "",
-			BallotIdentifier:     index,
-			VoterList:            observerMapper.ObserverList,
+			Index:            "",
+			BallotIdentifier: index,
+			VoterList:        observerMapper.ObserverList,
+			//todo looks like only using observers vote
 			Votes:                types.CreateVotes(len(observerMapper.ObserverList)),
 			ObservationType:      observationType,
 			BallotThreshold:      obsParams.BallotThreshold,
@@ -85,10 +86,12 @@ func (k Keeper) FindBallot(ctx sdk.Context, index string, chain *common.Chain, o
 }
 
 func (k Keeper) IsValidator(ctx sdk.Context, creator string) error {
+	//todo not understand this,input account got operator?account=>operator?
 	valAddress, err := types.GetOperatorAddressFromAccAddress(creator)
 	if err != nil {
 		return err
 	}
+	//todo stakingkeeper?
 	validator, found := k.stakingKeeper.GetValidator(ctx, valAddress)
 	if !found {
 		return types.ErrNotValidator
@@ -122,6 +125,7 @@ func (k Keeper) CheckObserverDelegation(ctx sdk.Context, accAddress string, chai
 	if err != nil {
 		return err
 	}
+	//todo looks like every account can assign an operator
 	valAddress, err := types.GetOperatorAddressFromAccAddress(accAddress)
 	if err != nil {
 		return err

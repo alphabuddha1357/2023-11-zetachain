@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"log"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,8 +13,12 @@ import (
 
 func (k Keeper) SetBallot(ctx sdk.Context, ballot *types.Ballot) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VoterKey))
+	//todo why this change index to ballotidentifier
+	//todo report this?
 	ballot.Index = ballot.BallotIdentifier
 	b := k.cdc.MustMarshal(ballot)
+	//todo set in one order,got in another order
+	log.Println("SetBallot", ballot.Index)
 	store.Set([]byte(ballot.Index), b)
 }
 
@@ -50,6 +55,8 @@ func (k Keeper) GetAllBallots(ctx sdk.Context) (voters []*types.Ballot) {
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Ballot
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		//todo report this? not in set order
+		log.Println("GetAllBallots", val.Index)
 		voters = append(voters, &val)
 	}
 	return
@@ -66,6 +73,7 @@ func (k Keeper) AddBallotToList(ctx sdk.Context, ballot types.Ballot) {
 }
 
 // GetMaturedBallotList Returns a list of ballots which are matured at current height
+// todo current height-maturityblocks,maybe 5?
 func (k Keeper) GetMaturedBallotList(ctx sdk.Context) []string {
 	maturityBlocks := k.GetParams(ctx).BallotMaturityBlocks
 	list, found := k.GetBallotList(ctx, ctx.BlockHeight()-maturityBlocks)
@@ -82,6 +90,7 @@ func (k Keeper) BallotByIdentifier(goCtx context.Context, req *types.QueryBallot
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	//todo index must be ballotidentifier for this right
 	ballot, found := k.GetBallot(ctx, req.BallotIdentifier)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found ballot")

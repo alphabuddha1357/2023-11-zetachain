@@ -10,14 +10,17 @@ import (
 )
 
 func Ballot(t *testing.T, index string) *types.Ballot {
+	//todo this is a settled num for test
 	r := newRandFromStringSeed(t, index)
 
 	return &types.Ballot{
-		Index:                index,
-		BallotIdentifier:     StringRandom(r, 32),
-		VoterList:            []string{AccAddress(), AccAddress()},
-		Votes:                []types.VoteType{types.VoteType_FailureObservation, types.VoteType_SuccessObservation},
-		ObservationType:      types.ObservationType_EmptyObserverType,
+		Index:            index,
+		BallotIdentifier: StringRandom(r, 32),
+		VoterList:        []string{AccAddress(), AccAddress()},
+		Votes:            []types.VoteType{types.VoteType_FailureObservation, types.VoteType_SuccessObservation},
+		//todo for test non 0
+		//ObservationType:      types.ObservationType_EmptyObserverType,
+		ObservationType:      types.ObservationType_InBoundTx,
 		BallotThreshold:      sdk.NewDec(1),
 		BallotStatus:         types.BallotStatus_BallotInProgress,
 		BallotCreationHeight: r.Int63(),

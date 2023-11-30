@@ -11,6 +11,8 @@ import (
 )
 
 // AddBlockHeader handles adding a block header to the store, through majority voting of observers
+
+// todo how long call this to add blockheader
 func (k msgServer) AddBlockHeader(goCtx context.Context, msg *types.MsgAddBlockHeader) (*types.MsgAddBlockHeaderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 

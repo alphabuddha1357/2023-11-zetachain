@@ -8,6 +8,7 @@ import (
 	"github.com/zeta-chain/zetacore/x/observer/types"
 )
 
+// todo sanity check for observer count
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	lastBlockObserverCount, found := k.GetLastObserverCount(ctx)
 	if !found {
@@ -18,8 +19,10 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	allObservers := k.GetAllObserverMappers(ctx)
 	totalObserverCountCurrentBlock := 0
 	for _, observer := range allObservers {
+		//todo include all chain?
 		totalObserverCountCurrentBlock += len(observer.ObserverList)
 	}
+	//todo this condition never happend
 	if totalObserverCountCurrentBlock < 0 {
 		ctx.Logger().Error("TotalObserverCount is negative at height", ctx.BlockHeight())
 		return
