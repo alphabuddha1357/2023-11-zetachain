@@ -8,6 +8,7 @@ import (
 )
 
 // EnsureGasStabilityPoolAccountCreated ensures the gas stability pool account exists
+// todo for what use
 func (k Keeper) EnsureGasStabilityPoolAccountCreated(ctx sdk.Context) {
 	address := types.GasStabilityPoolAddress()
 
@@ -57,6 +58,7 @@ func (k Keeper) FundGasStabilityPool(
 }
 
 // WithdrawFromGasStabilityPool burns the ZRC20 from the gas stability pool
+// todo this statility pool accounting for gas token balance?
 func (k Keeper) WithdrawFromGasStabilityPool(
 	ctx sdk.Context,
 	chainID int64,

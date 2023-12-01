@@ -11,6 +11,7 @@ import (
 )
 
 // SetForeignCoins set a specific foreignCoins in the store from its index
+// todo what is foreign coin
 func (k Keeper) SetForeignCoins(ctx sdk.Context, foreignCoins types.ForeignCoins) {
 	p := types.KeyPrefix(fmt.Sprintf("%s", types.ForeignCoinsKeyPrefix))
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), p)
@@ -82,6 +83,7 @@ func (k Keeper) GetAllForeignCoins(ctx sdk.Context) (list []types.ForeignCoins) 
 }
 
 // GetGasCoinForForeignCoin returns the gas coin for a given chain
+// todo foreign coin include gas and erc20 token of other chain
 func (k Keeper) GetGasCoinForForeignCoin(ctx sdk.Context, chainID int64) (types.ForeignCoins, bool) {
 	foreignCoinList := k.GetAllForeignCoinsForChain(ctx, chainID)
 	for _, coin := range foreignCoinList {

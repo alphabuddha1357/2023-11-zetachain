@@ -16,10 +16,12 @@ import (
 // Only a ZRC20 contract or the WZeta connector contract can be updated
 // IMPORTANT: the new contract bytecode must have the same storage layout as the old contract bytecode
 // the new contract can add new variable but cannot remove any existing variable
+// todo token contract can update in golang level?
 func (k msgServer) UpdateContractBytecode(goCtx context.Context, msg *types.MsgUpdateContractBytecode) (*types.MsgUpdateContractBytecodeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check authorization
+	//todo only group2 can update
 	if msg.Creator != k.observerKeeper.GetParams(ctx).GetAdminPolicyAccount(observertypes.Policy_Type_group2) {
 		return nil, cosmoserror.Wrap(sdkerrors.ErrUnauthorized, "Deploy can only be executed by the correct policy account")
 	}

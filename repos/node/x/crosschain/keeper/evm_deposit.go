@@ -15,6 +15,7 @@ import (
 	fungibletypes "github.com/zeta-chain/zetacore/x/fungible/types"
 )
 
+// todo looks like fungile listen other chain's deposit and call zetachain's deposit or zeta token's mint
 // HandleEVMDeposit handles a deposit from an inbound tx
 // returns (isContractReverted, err)
 // (true, non-nil) means CallEVM() reverted
@@ -37,12 +38,14 @@ func (k Keeper) HandleEVMDeposit(
 
 	if msg.CoinType == common.CoinType_Zeta {
 		// if coin type is Zeta, this is a deposit ZETA to zEVM cctx.
+		//todo fungile call zeta mint in zetachain
 		err := k.fungibleKeeper.DepositCoinZeta(ctx, to, msg.Amount.BigInt())
 		if err != nil {
 			return false, err
 		}
 	} else {
 		// cointype is Gas or ERC20; then it could be a ZRC20 deposit/depositAndCall cctx.
+		//todo handle token from other chain,user call deposit from other chain
 		parsedAddress, data, err := parseAddressAndData(msg.Message)
 		if err != nil {
 			return false, errors.Wrap(types.ErrUnableToParseAddress, err.Error())
@@ -56,6 +59,7 @@ func (k Keeper) HandleEVMDeposit(
 			return false, fmt.Errorf("HandleEVMDeposit: unable to decode address: %s", err.Error())
 		}
 
+		//todo also call system contract deposit
 		evmTxResponse, contractCall, err := k.fungibleKeeper.ZRC20DepositAndCallContract(
 			ctx,
 			from,

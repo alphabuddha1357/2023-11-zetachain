@@ -23,6 +23,7 @@ func (k Keeper) UpdateNonce(ctx sdk.Context, receiveChainID int64, cctx *types.C
 		return zetaObserverTypes.ErrSupportedChains
 	}
 
+	//todo for every chain save an nonce locally
 	nonce, found := k.GetChainNonces(ctx, chain.ChainName.String())
 	if !found {
 		return cosmoserrors.Wrap(types.ErrCannotFindReceiverNonce, fmt.Sprintf("Chain(%s) | Identifiers : %s ", chain.ChainName.String(), cctx.LogIdentifierForCCTX()))
@@ -30,6 +31,7 @@ func (k Keeper) UpdateNonce(ctx sdk.Context, receiveChainID int64, cctx *types.C
 
 	// SET nonce
 	cctx.GetCurrentOutTxParam().OutboundTxTssNonce = nonce.Nonce
+	//todo tss is eoa
 	tss, found := k.GetTSS(ctx)
 	if !found {
 		return cosmoserrors.Wrap(types.ErrCannotFindTSSKeys, fmt.Sprintf("Chain(%s) | Identifiers : %s ", chain.ChainName.String(), cctx.LogIdentifierForCCTX()))
@@ -81,6 +83,7 @@ func (k Keeper) RefundAmountOnZetaChain(ctx sdk.Context, cctx types.CrossChainTx
 	}
 
 	// deposit the amount to the sender
+	//todo fungile call deposit for sender, when outbound failed, return to sender
 	if _, err := k.fungibleKeeper.DepositZRC20(ctx, zrc20, sender, inputAmount.BigInt()); err != nil {
 		return errors.New("failed to deposit zrc20 on ZetaChain" + err.Error())
 	}

@@ -122,6 +122,7 @@ func (k Keeper) GasPrice(c context.Context, req *types.QueryGetGasPriceRequest) 
 // median index is updated.
 //
 // Only observer validators are authorized to broadcast this message.
+// todo where vote?
 func (k msgServer) GasPriceVoter(goCtx context.Context, msg *types.MsgGasPriceVoter) (*types.MsgGasPriceVoterResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 

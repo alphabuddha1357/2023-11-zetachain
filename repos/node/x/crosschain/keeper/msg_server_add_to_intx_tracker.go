@@ -42,6 +42,7 @@ func (k msgServer) AddToInTxTracker(goCtx context.Context, msg *types.MsgAddToIn
 	}
 
 	// Sender needs to be either the admin policy account or an observer
+	//todo only those 3 can set
 	if !(isAdmin || isObserver || isProven) {
 		return nil, errorsmod.Wrap(observertypes.ErrNotAuthorized, fmt.Sprintf("Creator %s", msg.Creator))
 	}

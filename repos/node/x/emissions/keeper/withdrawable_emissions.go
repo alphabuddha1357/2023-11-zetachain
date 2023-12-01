@@ -37,6 +37,7 @@ func (k Keeper) GetAllWithdrawableEmission(ctx sdk.Context) (list []types.Withdr
 	return
 }
 
+// todo add revards to observer
 func (k Keeper) AddObserverEmission(ctx sdk.Context, address string, amount sdkmath.Int) {
 	we, found := k.GetWithdrawableEmission(ctx, address)
 	if !found {

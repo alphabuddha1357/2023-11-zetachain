@@ -74,7 +74,7 @@ func (k *Keeper) GetWZetaContractAddress(ctx sdk.Context) (ethcommon.Address, er
 		nil,
 		false,
 		false,
-		"wZetaContractAddress",
+		"wZetaContractAddress", //todo system contract's func
 	)
 	if err != nil {
 		return ethcommon.Address{}, cosmoserrors.Wrapf(err, "failed to call wZetaContractAddress")

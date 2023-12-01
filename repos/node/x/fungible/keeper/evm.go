@@ -119,6 +119,7 @@ func (k Keeper) DeployZRC20Contract(
 		return common.Address{}, cosmoserrors.Wrapf(types.ErrABIPack, "failed to deploy ZRC20 contract: %s, %s", name, err.Error())
 	}
 
+	//todo why not check if found?
 	coin, _ := k.GetForeignCoins(ctx, contractAddr.Hex())
 	coin.CoinType = coinType
 	coin.Name = name
@@ -134,6 +135,7 @@ func (k Keeper) DeployZRC20Contract(
 }
 
 func (k Keeper) DeploySystemContract(ctx sdk.Context, wzeta common.Address, v2factory common.Address, router02 common.Address) (common.Address, error) {
+	//todo no need to check if found?
 	system, _ := k.GetSystemContract(ctx)
 
 	contractAddr, err := k.DeployContract(ctx, systemcontract.SystemContractMetaData, wzeta, v2factory, router02)
@@ -191,6 +193,7 @@ func (k Keeper) DeployConnectorZEVM(ctx sdk.Context, wzeta common.Address) (comm
 // DepositZRC20 deposits ZRC4 tokens into to account;
 // Callable only by the fungible module account
 // returns directly CallEVM()
+// todo systemContract's deposit
 func (k Keeper) DepositZRC20(
 	ctx sdk.Context,
 	contract common.Address,
@@ -241,6 +244,7 @@ func (k Keeper) UpdateZRC20ProtocolFlatFee(
 }
 
 // UpdateZRC20GasLimit updates the gas limit for a given ZRC20 contract
+// todo zrc20 token onlyFungible
 func (k Keeper) UpdateZRC20GasLimit(
 	ctx sdk.Context,
 	zrc20Addr common.Address,
@@ -294,7 +298,7 @@ func (k Keeper) DepositZRC20AndCallContract(ctx sdk.Context,
 		ZEVMGasLimitDepositAndCall,
 		true,
 		false,
-		"depositAndCall",
+		"depositAndCall", //todo systemContract's, only fungible can call
 		context,
 		zrc20Addr,
 		amount,
@@ -319,6 +323,7 @@ func (k Keeper) QueryWithdrawGasFee(ctx sdk.Context, contract common.Address) (*
 		false,
 		false,
 		"withdrawGasFee",
+		//todo get withdraw fee from zrc20 token, fee useful for other chain, this zrc20 connected other chain's erc20 token
 	)
 	if err != nil {
 		return nil, err
@@ -466,6 +471,7 @@ func (k Keeper) QueryZRC20Data(
 }
 
 // BalanceOfZRC4 queries an account's balance for a given ZRC4 contract
+// todo what is zrc4?
 func (k Keeper) BalanceOfZRC4(
 	ctx sdk.Context,
 	contract, account common.Address,
@@ -521,6 +527,7 @@ func (k Keeper) TotalSupplyZRC4(
 }
 
 // QueryChainIDFromContract returns the chain id of the chain
+// todo zrc20 connected with other chain's token
 func (k Keeper) QueryChainIDFromContract(
 	ctx sdk.Context,
 	contract common.Address,

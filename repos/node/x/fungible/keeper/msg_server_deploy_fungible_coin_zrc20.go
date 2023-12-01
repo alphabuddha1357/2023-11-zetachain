@@ -53,6 +53,7 @@ func (k msgServer) DeployFungibleCoinZRC20(goCtx context.Context, msg *types.Msg
 		}
 	} else {
 		// #nosec G701 always in range
+		//todo non gas coin only deploy
 		address, err = k.DeployZRC20Contract(ctx, msg.Name, msg.Symbol, uint8(msg.Decimals), msg.ForeignChainId, msg.CoinType, msg.ERC20, big.NewInt(msg.GasLimit))
 		if err != nil {
 			return nil, err

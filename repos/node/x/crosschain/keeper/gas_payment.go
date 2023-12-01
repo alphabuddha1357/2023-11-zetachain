@@ -128,6 +128,7 @@ func (k Keeper) PayGasNativeAndUpdateCctx(
 // the gas fee in ERC20 is calculated by swapping ERC20 -> Zeta -> Gas
 // if the route is not available, the gas payment will fail
 // **Caller should feed temporary ctx into this function**
+// todo use swap in zetachain,swap erc20 to gas token
 func (k Keeper) PayGasInERC20AndUpdateCctx(
 	ctx sdk.Context,
 	chainID int64,
@@ -254,6 +255,7 @@ func (k Keeper) PayGasInERC20AndUpdateCctx(
 // The gas ZRC20 balance is subsequently burned to account for the expense of TSS address gas fee payment in the outbound tx.
 // zetaBurnt represents the amount of Zeta that has been burnt for the tx, the final amount for the tx is zetaBurnt - gasFee
 // **Caller should feed temporary ctx into this function**
+// todo burn zeta for gas token
 func (k Keeper) PayGasInZetaAndUpdateCctx(
 	ctx sdk.Context,
 	chainID int64,

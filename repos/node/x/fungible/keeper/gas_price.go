@@ -59,6 +59,7 @@ func (k Keeper) SetGasCoin(ctx sdk.Context, chainid *big.Int, address common.Add
 	return nil
 }
 
+// todo this is uniswapv2's gas token and zeta pair address
 func (k Keeper) SetGasZetaPool(ctx sdk.Context, chainid *big.Int, pool common.Address) error {
 	system, found := k.GetSystemContract(ctx)
 	if !found {

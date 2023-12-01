@@ -9,6 +9,7 @@ import (
 	"github.com/zeta-chain/zetacore/x/crosschain/types"
 )
 
+// todo inbound need to finalized with vote
 func EmitEventInboundFinalized(ctx sdk.Context, cctx *types.CrossChainTx) {
 	currentOutParam := cctx.GetCurrentOutTxParam()
 	err := ctx.EventManager().EmitTypedEvents(&types.EventInboundFinalized{

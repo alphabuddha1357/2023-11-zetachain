@@ -18,6 +18,7 @@ const (
 )
 
 // IterateAndUpdateCctxGasPrice iterates through all cctx and updates the gas price if pending for too long
+// todo check how long call this
 func (k Keeper) IterateAndUpdateCctxGasPrice(ctx sdk.Context) error {
 	// fetch the gas price increase flags or use default
 	gasPriceIncreaseFlags := observertypes.DefaultGasPriceIncreaseFlags
@@ -75,6 +76,7 @@ func (k Keeper) CheckAndUpdateCctxGasPrice(
 
 	// compute gas price increase
 	chainID := cctx.GetCurrentOutTxParam().ReceiverChainId
+	//todo get from local kv, maybe update periodly?
 	medianGasPrice, isFound := k.GetMedianGasPriceInUint(ctx, chainID)
 	if !isFound {
 		return math.ZeroUint(), math.ZeroUint(), cosmoserrors.Wrap(
@@ -82,6 +84,7 @@ func (k Keeper) CheckAndUpdateCctxGasPrice(
 			fmt.Sprintf("cannot get gas price for chain %d", chainID),
 		)
 	}
+	//todo add value by percent?why not according real gas price in other chain?
 	gasPriceIncrease := medianGasPrice.MulUint64(uint64(flags.GasPriceIncreasePercent)).QuoUint64(100)
 
 	// compute new gas price
