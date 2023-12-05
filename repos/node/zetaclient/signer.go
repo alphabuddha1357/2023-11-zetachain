@@ -17,6 +17,7 @@ import (
 type TSSSigner interface {
 	Pubkey() []byte
 	// Sign: Specify optionalPubkey to use a different pubkey than the current pubkey set during keygen
+	//todo only one tss of one chain?
 	Sign(data []byte, height uint64, nonce uint64, chain *common.Chain, optionalPubkey string) ([65]byte, error)
 	EVMAddress() ethcommon.Address
 	BTCAddress() string

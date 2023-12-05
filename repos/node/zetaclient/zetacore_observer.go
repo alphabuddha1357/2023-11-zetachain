@@ -189,6 +189,7 @@ func (co *CoreObserver) startSendScheduler() {
 							outTxID := fmt.Sprintf("%s-%d-%d", cctx.Index, params.ReceiverChainId, nonce) // would outTxID a better ID?
 
 							// Process Bitcoin OutTx
+							//todo every zetachain block process once
 							if common.IsBitcoinChain(c.ChainId) {
 								if outTxMan.IsOutTxActive(outTxID) {
 									// bitcoun outTx is processed sequencially by nonce

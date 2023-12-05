@@ -17,6 +17,7 @@ import (
 )
 
 const (
+	//todo change to var more better?
 	PostGasPriceGasLimit            = 1_500_000
 	AddTxHashToOutTxTrackerGasLimit = 200_000
 	PostNonceGasLimit               = 200_000

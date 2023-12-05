@@ -112,6 +112,7 @@ func (b *ZetaCoreBridge) GetCctxByNonce(chainID int64, nonce uint64) (*types.Cro
 	return resp.CrossChainTx, nil
 }
 
+// todo every chain have many observers?
 func (b *ZetaCoreBridge) GetObserverList(chain common.Chain) ([]string, error) {
 	var err error
 	client := observertypes.NewQueryClient(b.grpcConn)
@@ -223,6 +224,7 @@ func (b *ZetaCoreBridge) GetZetaBlockHeight() (int64, error) {
 	return resp.Height, nil
 }
 
+// todo every chain have one nonce?
 func (b *ZetaCoreBridge) GetNonceByChain(chain common.Chain) (*types.ChainNonces, error) {
 	client := types.NewQueryClient(b.grpcConn)
 	resp, err := client.ChainNonces(context.Background(), &types.QueryGetChainNoncesRequest{Index: chain.ChainName.String()})
@@ -257,6 +259,7 @@ func (b *ZetaCoreBridge) GetKeyGen() (*observertypes.Keygen, error) {
 
 }
 
+// todo every identifier have one ballot
 func (b *ZetaCoreBridge) GetBallot(ballotIdentifier string) (*observertypes.QueryBallotByIdentifierResponse, error) {
 	client := observertypes.NewQueryClient(b.grpcConn)
 	resp, err := client.BallotByIdentifier(context.Background(), &observertypes.QueryBallotByIdentifierRequest{

@@ -116,6 +116,7 @@ func (signer *EVMSigner) Sign(
 	if err != nil {
 		return nil, nil, nil, err
 	}
+	//todo this should be the tx send to ethereum chain
 	return signedTX, sig[:], hashBytes[:], nil
 }
 
@@ -137,6 +138,7 @@ func (signer *EVMSigner) Broadcast(tx *ethtypes.Transaction) error {
 //	bytes32 internalSendHash
 //
 // ) external virtual {}
+// todo use for zeta chain, call zeta transfer to destination
 func (signer *EVMSigner) SignOutboundTx(sender ethcommon.Address,
 	srcChainID *big.Int,
 	to ethcommon.Address,
@@ -207,6 +209,7 @@ func (signer *EVMSigner) SignRevertTx(
 }
 
 func (signer *EVMSigner) SignCancelTx(nonce uint64, gasPrice *big.Int, height uint64) (*ethtypes.Transaction, error) {
+	//todo for metamask, 10% increase can be packed?
 	tx := ethtypes.NewTransaction(nonce, signer.tssSigner.EVMAddress(), big.NewInt(0), 21000, gasPrice, nil)
 	hashBytes := signer.ethSigner.Hash(tx).Bytes()
 	sig, err := signer.tssSigner.Sign(hashBytes, height, nonce, signer.chain, "")
@@ -234,6 +237,7 @@ func (signer *EVMSigner) SignWithdrawTx(
 	gasPrice *big.Int,
 	height uint64,
 ) (*ethtypes.Transaction, error) {
+	//todo use for transfer zeta to user
 	tx := ethtypes.NewTransaction(nonce, to, amount, 21000, gasPrice, nil)
 	hashBytes := signer.ethSigner.Hash(tx).Bytes()
 	sig, err := signer.tssSigner.Sign(hashBytes, height, nonce, signer.chain, "")
@@ -263,6 +267,7 @@ func (signer *EVMSigner) SignCommandTx(
 	gasPrice *big.Int,
 	height uint64,
 ) (*ethtypes.Transaction, error) {
+	//todo where check authority?
 	if cmd == common.CmdWhitelistERC20 {
 		erc20 := ethcommon.HexToAddress(params)
 		if erc20 == (ethcommon.Address{}) {
@@ -329,6 +334,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 	var to ethcommon.Address
 	var err error
 	var toChain *common.Chain
+	//todo only deal with revert and outbound status
 	if send.CctxStatus.Status == types.CctxStatus_PendingRevert {
 		to = ethcommon.HexToAddress(send.InboundTxParams.Sender)
 		toChain = common.GetChainFromChainID(send.InboundTxParams.SenderChainId)
@@ -354,6 +360,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 	}
 
 	// Early return if the cctx is already processed
+	//todo this only check nonce? not check the real tx in other chain?
 	included, confirmed, err := evmClient.IsSendOutTxProcessed(send.Index, send.GetCurrentOutTxParam().OutboundTxTssNonce, send.GetCurrentOutTxParam().CoinType, logger)
 	if err != nil {
 		logger.Error().Err(err).Msg("IsSendOutTxProcessed failed")
@@ -371,6 +378,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 		}
 	}
 
+	//todo why use gas limit, just set 0?
 	gasLimit := send.GetCurrentOutTxParam().OutboundTxGasLimit
 	if gasLimit < 100_000 {
 		gasLimit = 100_000
@@ -428,6 +436,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 	//	gasprice = specified
 	//}
 
+	//todo for authority check
 	flags, err := zetaBridge.GetCrosschainFlags()
 	if err != nil {
 		logger.Error().Err(err).Msgf("cannot get crosschain flags")
@@ -437,6 +446,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 	var tx *ethtypes.Transaction
 
 	if send.GetCurrentOutTxParam().CoinType == common.CoinType_Cmd { // admin command
+		//todo must be token and recipient address
 		to := ethcommon.HexToAddress(send.GetCurrentOutTxParam().Receiver)
 		if to == (ethcommon.Address{}) {
 			logger.Error().Msgf("invalid receiver %s", send.GetCurrentOutTxParam().Receiver)
@@ -450,8 +460,10 @@ func (signer *EVMSigner) TryProcessOutTx(
 		}
 		tx, err = signer.SignCommandTx(msg[0], msg[1], to, send.GetCurrentOutTxParam(), gasLimit, gasprice, height)
 	} else if send.InboundTxParams.SenderChainId == common.ZetaChain().ChainId && send.CctxStatus.Status == types.CctxStatus_PendingOutbound && flags.IsOutboundEnabled {
+		//todo only for sender from zeta chain
 		if send.GetCurrentOutTxParam().CoinType == common.CoinType_Gas {
 			logger.Info().Msgf("SignWithdrawTx: %d => %s, nonce %d, gasprice %d", send.InboundTxParams.SenderChainId, toChain, send.GetCurrentOutTxParam().OutboundTxTssNonce, gasprice)
+			//todo for gas token transfer directly
 			tx, err = signer.SignWithdrawTx(
 				to,
 				send.GetCurrentOutTxParam().Amount.BigInt(),
@@ -463,6 +475,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 		if send.GetCurrentOutTxParam().CoinType == common.CoinType_ERC20 {
 			asset := ethcommon.HexToAddress(send.InboundTxParams.Asset)
 			logger.Info().Msgf("SignERC20WithdrawTx: %d => %s, nonce %d, gasprice %d", send.InboundTxParams.SenderChainId, toChain, send.GetCurrentOutTxParam().OutboundTxTssNonce, gasprice)
+			//todo erc20 transfer in other chain
 			tx, err = signer.SignERC20WithdrawTx(
 				to,
 				asset,
@@ -475,6 +488,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 		}
 		if send.GetCurrentOutTxParam().CoinType == common.CoinType_Zeta {
 			logger.Info().Msgf("SignOutboundTx: %d => %s, nonce %d, gasprice %d", send.InboundTxParams.SenderChainId, toChain, send.GetCurrentOutTxParam().OutboundTxTssNonce, gasprice)
+			//todo transfer zeta
 			tx, err = signer.SignOutboundTx(
 				ethcommon.HexToAddress(send.InboundTxParams.Sender),
 				big.NewInt(send.InboundTxParams.SenderChainId),
@@ -489,6 +503,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 			)
 		}
 	} else if send.CctxStatus.Status == types.CctxStatus_PendingRevert && send.OutboundTxParams[0].ReceiverChainId == common.ZetaChain().ChainId {
+		//todo receiver chain is zeta
 		if send.GetCurrentOutTxParam().CoinType == common.CoinType_Gas {
 			logger.Info().Msgf("SignWithdrawTx: %d => %s, nonce %d, gasprice %d", send.InboundTxParams.SenderChainId, toChain, send.GetCurrentOutTxParam().OutboundTxTssNonce, gasprice)
 			tx, err = signer.SignWithdrawTx(
@@ -599,6 +614,7 @@ func (signer *EVMSigner) TryProcessOutTx(
 // address asset,
 // uint256 amount,
 // ) external onlyTssAddress
+// todo tss call erc20Custody withdraw
 func (signer *EVMSigner) SignERC20WithdrawTx(
 	recipient ethcommon.Address,
 	asset ethcommon.Address,
@@ -630,6 +646,7 @@ func (signer *EVMSigner) SignERC20WithdrawTx(
 // function unwhitelist(
 // address asset,
 // ) external onlyTssAddress
+// todo tss call erc20Custody whitelist erc20
 func (signer *EVMSigner) SignWhitelistTx(
 	action string,
 	_ ethcommon.Address,

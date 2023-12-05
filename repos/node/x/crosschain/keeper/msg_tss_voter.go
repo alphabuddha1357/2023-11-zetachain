@@ -16,6 +16,7 @@ import (
 
 // MESSAGES
 
+// todo create tss every time or epoch?
 // CreateTSSVoter votes on creating a TSS key and recording the information about it (public
 // key, participant and operator addresses, finalized and keygen heights).
 //
@@ -24,20 +25,23 @@ import (
 //
 // Fails if the keygen does not exist, the keygen has been already
 // completed, or the keygen has failed.
-//
+// todo only node account?what is operator ? observer?
 // Only node accounts are authorized to broadcast this message.
 func (k msgServer) CreateTSSVoter(goCtx context.Context, msg *types.MsgCreateTSSVoter) (*types.MsgCreateTSSVoterResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	//todo creator have to be observer
 	if !k.IsAuthorizedNodeAccount(ctx, msg.Creator) {
 		return nil, errorsmod.Wrap(sdkerrors.ErrorInvalidSigner, fmt.Sprintf("signer %s does not have a node account set", msg.Creator))
 	}
 	// No need to create a ballot if keygen does not exist
+	//todo first create key?this read from kv,where create it?
 	keygen, found := k.zetaObserverKeeper.GetKeygen(ctx)
 	if !found {
 		return &types.MsgCreateTSSVoterResponse{}, observerTypes.ErrKeygenNotFound
 	}
 	// USE a separate transaction to update KEYGEN status to pending when trying to change the TSS address
+	//todo what is the state machine of key gen?
 	if keygen.Status == observerTypes.KeygenStatus_KeyGenSuccess {
 		return &types.MsgCreateTSSVoterResponse{}, observerTypes.ErrKeygenCompleted
 	}
@@ -49,15 +53,17 @@ func (k msgServer) CreateTSSVoter(goCtx context.Context, msg *types.MsgCreateTSS
 	if !found {
 		var voterList []string
 
+		//todo observer equal to operator
 		for _, nodeAccount := range k.zetaObserverKeeper.GetAllNodeAccount(ctx) {
 			voterList = append(voterList, nodeAccount.Operator)
 		}
 		ballot = observerTypes.Ballot{
-			Index:                "",
-			BallotIdentifier:     index,
-			VoterList:            voterList,
-			Votes:                observerTypes.CreateVotes(len(voterList)),
-			ObservationType:      observerTypes.ObservationType_TSSKeyGen,
+			Index:            "",
+			BallotIdentifier: index,
+			VoterList:        voterList,
+			Votes:            observerTypes.CreateVotes(len(voterList)),
+			ObservationType:  observerTypes.ObservationType_TSSKeyGen,
+			//todo only one?
 			BallotThreshold:      sdk.MustNewDecFromStr("1.00"),
 			BallotStatus:         observerTypes.BallotStatus_BallotInProgress,
 			BallotCreationHeight: ctx.BlockHeight(),
@@ -77,6 +83,7 @@ func (k msgServer) CreateTSSVoter(goCtx context.Context, msg *types.MsgCreateTSS
 		}
 	}
 	if !found {
+		//todo for the create ballot
 		observerKeeper.EmitEventBallotCreated(ctx, ballot, msg.TssPubkey, "Common-TSS-For-All-Chain")
 	}
 
@@ -86,6 +93,7 @@ func (k msgServer) CreateTSSVoter(goCtx context.Context, msg *types.MsgCreateTSS
 		return &types.MsgCreateTSSVoterResponse{}, nil
 	}
 	// Set TSS only on success, set Keygen either way.
+	//todo key gen update in another transaction, policy?
 	// Keygen block can be updated using a policy transaction if keygen fails
 	if ballot.BallotStatus != observerTypes.BallotStatus_BallotFinalized_FailureObservation {
 		tss := types.TSS{
@@ -105,11 +113,12 @@ func (k msgServer) CreateTSSVoter(goCtx context.Context, msg *types.MsgCreateTSS
 		k.SetTSSHistory(ctx, tss)
 		keygen.Status = observerTypes.KeygenStatus_KeyGenSuccess
 		keygen.BlockNumber = ctx.BlockHeight()
-
+		//todo just use else
 	} else if ballot.BallotStatus == observerTypes.BallotStatus_BallotFinalized_FailureObservation {
 		keygen.Status = observerTypes.KeygenStatus_KeyGenFailed
 		keygen.BlockNumber = math2.MaxInt64
 	}
+	//todo is this called by admin?
 	k.zetaObserverKeeper.SetKeygen(ctx, keygen)
 	return &types.MsgCreateTSSVoterResponse{}, nil
 }
@@ -129,7 +138,7 @@ func (k msgServer) UpdateTssAddress(goCtx context.Context, msg *types.MsgUpdateT
 	return &types.MsgUpdateTssAddressResponse{}, nil
 }
 
-// IsAuthorizedNodeAccount checks whether a signer is authorized to sign , by checking their address against the observer mapper which contains the observer list for the chain and type
+// UpdateTssAddress checks whether a signer is authorized to sign , by checking their address against the observer mapper which contains the observer list for the chain and type
 func (k Keeper) IsAuthorizedNodeAccount(ctx sdk.Context, address string) bool {
 	_, found := k.zetaObserverKeeper.GetNodeAccount(ctx, address)
 	if found {

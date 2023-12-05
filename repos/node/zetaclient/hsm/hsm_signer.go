@@ -61,6 +61,7 @@ func GetHSMAddress(config *crypto11.Config, label string) (types.Address, types.
 // Signing a transaction with multiple signers in the DIRECT mode is not supported and will
 // return an error.
 // An error is returned upon failure.
+// todo generate temp key to sign
 func SignWithHSM(
 	txf clienttx.Factory,
 	name string,

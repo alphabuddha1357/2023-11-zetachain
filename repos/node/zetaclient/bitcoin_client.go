@@ -269,6 +269,7 @@ func (ob *BitcoinChainClient) WatchInTx() {
 	for {
 		select {
 		case <-ticker.C():
+			//todo how about it's skipped by error
 			err := ob.observeInTx()
 			if err != nil {
 				ob.logger.WatchInTx.Error().Err(err).Msg("error observing in tx")
@@ -303,6 +304,7 @@ func (ob *BitcoinChainClient) postBlockHeader(tip int64) error {
 		return err
 	}
 	blockHash := res2.Header.BlockHash()
+	//todo add btc block header to zetachain
 	_, err = ob.zetaClient.PostAddBlockHeader(
 		ob.chain.ChainId,
 		blockHash[:],
@@ -557,6 +559,7 @@ func (ob *BitcoinChainClient) PostGasPrice() error {
 	return nil
 }
 
+// todo typos
 type BTCInTxEvnet struct {
 	FromAddress string  // the first input address
 	ToAddress   string  // some TSS address

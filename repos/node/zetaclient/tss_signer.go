@@ -313,6 +313,7 @@ func (tss *TSS) SignBatch(digests [][]byte, height uint64, nonce uint64, chain *
 		for _, signature := range signatures {
 			if D == signature.Msg {
 				found = true
+				//todo the following can be packed to func
 				_, err = base64.StdEncoding.Decode(sigBytes[j][:32], []byte(signature.R))
 				if err != nil {
 					log.Error().Err(err).Msg("decoding signature R")
@@ -500,6 +501,7 @@ func GetTssAddrEVM(tssPubkey string) (ethcommon.Address, error) {
 		return keyAddr, err
 	}
 	//keyAddrBytes := pubk.EVMAddress().Bytes()
+	//todo is this exist for original file
 	pubk.Bytes()
 	decompresspubkey, err := crypto.DecompressPubkey(pubk.Bytes())
 	if err != nil {

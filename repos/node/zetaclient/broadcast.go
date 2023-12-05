@@ -19,6 +19,7 @@ import (
 
 // Broadcast Broadcasts tx to metachain. Returns txHash and error
 func (b *ZetaCoreBridge) Broadcast(gaslimit uint64, authzWrappedMsg sdktypes.Msg, authzSigner AuthZSigner) (string, error) {
+	//todo 3 time?
 	gaslimit = gaslimit * 3
 	b.broadcastLock.Lock()
 	defer b.broadcastLock.Unlock()

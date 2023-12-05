@@ -17,6 +17,7 @@ func (k Keeper) VerifyProof(ctx sdk.Context, proof *common.Proof, chainID int64,
 	if !found {
 		return nil, fmt.Errorf("crosschain flags not found")
 	}
+	//todo have to have this feature enabled
 	if crosschainFlags.BlockHeaderVerificationFlags == nil {
 		return nil, fmt.Errorf("block header verification flags not found")
 	}

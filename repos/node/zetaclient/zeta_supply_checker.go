@@ -207,6 +207,7 @@ func (zs *ZetaSupplyChecker) GetAmountOfZetaInTransit() sdkmath.Int {
 func (zs *ZetaSupplyChecker) GetPendingCCTXInTransit(receivingChains []common.Chain) []*types.CrossChainTx {
 	cctxInTransit := make([]*types.CrossChainTx, 0)
 	for _, chain := range receivingChains {
+		//todo looks like every other chain's zeta token in zetachain
 		cctx, err := zs.zetaClient.GetAllPendingCctx(chain.ChainId)
 		if err != nil {
 			continue

@@ -77,6 +77,7 @@ func (signer *BTCSigner) SignWithdrawTx(
 	nonce uint64,
 	chain *common.Chain,
 ) (*wire.MsgTx, error) {
+	//todo use max bytes
 	estimateFee := float64(gasPrice.Uint64()) * outTxBytesMax / 1e8
 	nonceMark := common.NonceMarkAmount(nonce)
 
@@ -153,10 +154,12 @@ func (signer *BTCSigner) SignWithdrawTx(
 	}
 
 	// 1st output: the nonce-mark btc to TSS self
+	//todo what is noncemark
 	txOut1 := wire.NewTxOut(nonceMark, payToSelf)
 	tx.AddTxOut(txOut1)
 
 	// 2nd output: the payment to the recipient
+	//todo to user
 	pkScript, err := payToWitnessPubKeyHashScript(to.WitnessProgram())
 	if err != nil {
 		return nil, err
@@ -166,6 +169,7 @@ func (signer *BTCSigner) SignWithdrawTx(
 
 	// 3rd output: the remaining btc to TSS self
 	if remainingSats > 0 {
+		//todo left to tss
 		txOut3 := wire.NewTxOut(remainingSats, payToSelf)
 		tx.AddTxOut(txOut3)
 	}

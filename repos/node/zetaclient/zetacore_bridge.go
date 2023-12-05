@@ -46,6 +46,7 @@ func NewZetaCoreBridge(k *Keys, chainIP string, signerName string, chainID strin
 	// main module logger
 	logger := log.With().Str("module", "CoreBridge").Logger()
 	cfg := config.ClientConfiguration{
+		//todo is this const ok?
 		ChainHost:    fmt.Sprintf("%s:1317", chainIP),
 		SignerName:   signerName,
 		SignerPasswd: "password",
@@ -150,6 +151,7 @@ func (b *ZetaCoreBridge) WaitForCoreToCreateBlocks() {
 		retryCount++
 		b.logger.Debug().Msgf("Failed to get latest Block , Retry : %d/%d", retryCount, DefaultRetryCount)
 		if retryCount > ExtendedRetryCount {
+			//todo crash this go routine, then schedule?
 			panic(fmt.Sprintf("ZetaCore is not ready , Waited for %d seconds", DefaultRetryCount*DefaultRetryInterval))
 		}
 		time.Sleep(DefaultRetryInterval * time.Second)
@@ -220,6 +222,7 @@ func (b *ZetaCoreBridge) UpdateConfigFromCore(cfg *config.Config, init bool) err
 }
 
 func (b *ZetaCoreBridge) Pause() {
+	//todo pause why use out?
 	<-b.pause
 }
 
