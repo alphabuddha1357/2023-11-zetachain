@@ -502,6 +502,7 @@ func GetTssAddrEVM(tssPubkey string) (ethcommon.Address, error) {
 	}
 	//keyAddrBytes := pubk.EVMAddress().Bytes()
 	//todo is this exist for original file
+	//todo report this?
 	pubk.Bytes()
 	decompresspubkey, err := crypto.DecompressPubkey(pubk.Bytes())
 	if err != nil {

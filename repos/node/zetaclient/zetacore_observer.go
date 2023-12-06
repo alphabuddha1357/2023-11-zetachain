@@ -139,7 +139,7 @@ func (co *CoreObserver) startSendScheduler() {
 							continue
 						}
 						signer := co.signerMap[c]
-
+						//todo for all chain get cctx
 						cctxList, err := co.bridge.GetAllPendingCctx(c.ChainId)
 						if err != nil {
 							co.logger.ZetaChainWatcher.Error().Err(err).Msgf("failed to GetAllPendingCctx for chain %s", c.ChainName.String())
@@ -209,6 +209,7 @@ func (co *CoreObserver) startSendScheduler() {
 								co.logger.ZetaChainWatcher.Error().Err(err).Msgf("IsSendOutTxProcessed fail, Chain ID: %s", c.ChainName)
 								continue
 							}
+							//todo need to know what is included, in destination chain or in zeta chain?
 							if included {
 								co.logger.ZetaChainWatcher.Info().Msgf("send outTx already included; do not schedule")
 								continue
@@ -241,8 +242,10 @@ func (co *CoreObserver) startSendScheduler() {
 
 							// otherwise, the normal interval is used
 							if nonce%interval == currentHeight%interval && !outTxMan.IsOutTxActive(outTxID) {
+								//todo this func for what
 								outTxMan.StartTryProcess(outTxID)
 								co.logger.ZetaChainWatcher.Debug().Msgf("chain %s: Sign outtx %s with value %d\n", chain, outTxID, cctx.GetCurrentOutTxParam().Amount)
+								//todo process in destinantion chain
 								go signer.TryProcessOutTx(cctx, outTxMan, outTxID, ob, co.bridge, currentHeight)
 							}
 

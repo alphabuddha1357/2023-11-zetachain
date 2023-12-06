@@ -29,6 +29,7 @@ func GenerateTss(logger zerolog.Logger, cfg *config.Config, zetaBridge *mc.ZetaC
 		return nil, err
 	}
 	ts.SetP2PID(tss.Server.GetLocalPeerID())
+	//todo only keygen block can generate?
 	// If Keygen block is set it will try to generate new TSS at the block
 	// This is a blocking thread and will wait until the ceremony is complete successfully
 	// If the TSS generation is unsuccessful , it will loop indefinitely until a new TSS is generated

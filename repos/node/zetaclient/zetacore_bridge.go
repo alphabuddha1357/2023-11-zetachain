@@ -223,6 +223,7 @@ func (b *ZetaCoreBridge) UpdateConfigFromCore(cfg *config.Config, init bool) err
 
 func (b *ZetaCoreBridge) Pause() {
 	//todo pause why use out?
+	//todo report this?
 	<-b.pause
 }
 

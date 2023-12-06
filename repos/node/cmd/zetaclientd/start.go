@@ -119,6 +119,7 @@ func start(_ *cobra.Command, _ []string) error {
 		log.Error().Msgf(errMsg)
 		return errors.New(errMsg)
 	}
+	//todo :32 not necessary
 	priKey := secp256k1.PrivKey(bridgePk.Bytes()[:32])
 
 	// Generate pre Params if not present already
@@ -203,6 +204,7 @@ func start(_ *cobra.Command, _ []string) error {
 	}
 	isNodeActive := false
 	for _, observer := range observerList {
+		//todo observers from core, operator must be one of them
 		if observer == zetaBridge.GetKeys().GetOperatorAddress().String() {
 			isNodeActive = true
 			break
@@ -210,6 +212,7 @@ func start(_ *cobra.Command, _ []string) error {
 	}
 
 	// CreateSignerMap: This creates a map of all signers for each chain . Each signer is responsible for signing transactions for a particular chain
+	//todo one signer=>one chain
 	signerMap, err := CreateSignerMap(tss, masterLogger, cfg, telemetryServer)
 	if err != nil {
 		log.Error().Err(err).Msg("CreateSignerMap")
@@ -224,6 +227,7 @@ func start(_ *cobra.Command, _ []string) error {
 	dbpath := filepath.Join(userDir, ".zetaclient/chainobserver")
 
 	// CreateChainClientMap : This creates a map of all chain clients . Each chain client is responsible for listening to events on the chain and processing them
+	//todo one client=>one chain
 	chainClientMap, err := CreateChainClientMap(zetaBridge, tss, dbpath, metrics, masterLogger, cfg, telemetryServer)
 	if err != nil {
 		startLogger.Err(err).Msg("CreateSignerMap")
@@ -235,6 +239,7 @@ func start(_ *cobra.Command, _ []string) error {
 	} else {
 		startLogger.Debug().Msgf("Node %s is an active observer starting external chain observers", zetaBridge.GetKeys().GetOperatorAddress().String())
 		for _, v := range chainClientMap {
+			//todo start every chain's observer,operator ,one chain one signer
 			v.Start()
 		}
 	}

@@ -12,5 +12,7 @@ const (
 	Bech32PrefixConsPub         = "zetacpub"
 	DenomRegex                  = `[a-zA-Z][a-zA-Z0-9:\\/\\\-\\_\\.]{2,127}`
 	ZetaChainCoinType    uint32 = 60
-	ZetaChainHDPath      string = `m/44'/60'/0'/0/0`
+	//todo is this ethereum's path?
+	//todo report this?
+	ZetaChainHDPath string = `m/44'/60'/0'/0/0`
 )

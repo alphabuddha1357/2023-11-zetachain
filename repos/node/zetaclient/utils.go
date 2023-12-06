@@ -61,6 +61,7 @@ func round(f float64) int64 {
 		return int64(f - 0.5)
 	}
 	// #nosec G701 always in range
+	//todo float64 more bigger than int64
 	return int64(f + 0.5)
 }
 
@@ -137,6 +138,7 @@ func (ob *EVMChainClient) GetInboundVoteMsgForDepositedEvent(event *erc20custody
 	), nil
 }
 
+// todo only zeta user call send in other chain's connector
 func (ob *EVMChainClient) GetInboundVoteMsgForZetaSentEvent(event *zetaconnector.ZetaConnectorNonEthZetaSent) (types.MsgVoteOnObservedInboundTx, error) {
 	ob.logger.ExternalChainWatcher.Info().Msgf("TxBlockNumber %d Transaction Hash: %s Message : %s", event.Raw.BlockNumber, event.Raw.TxHash, event.Message)
 	destChain := common.GetChainFromChainID(event.DestinationChainId.Int64())
